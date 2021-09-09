@@ -1,9 +1,13 @@
 # 2_新規Laravelアプリ作成と初期設定
 
-<p style='text-align: right;'> &copy; 20210901 by Takanori Shima </p>
+<p style='text-align: right;'> &copy; 20210907 by Takanori Shima </p>
 
 ```
 * 以下、Cloud9上でターミナルを起動してコマンドを打つ *
+最終的には3つのターミナルを同時に開いておく
+- MySQL用(占有)
+- Laravelサーバ起動用(占有)
+- artisanコマンドを随時実行用
 ```
 
 ## 1. 新規データべース作成 
@@ -11,9 +15,11 @@
 sudo service mysqld start
 mysql -u root
 mysql> create database bbs_laravel default character set utf8;
-mysql> exit;
+mysql> use bbs_laravel;
 ```
+このターミナルはこのままMySQL専用にする
 ## 2. 新規Laravelプロジェクト作成(bbs_laravel)
+もう一つターミナルを起動
 ```
 composer create-project --prefer-dist laravel/laravel bbs_laravel "5.8.*"
 cd bbs_laravel
@@ -66,7 +72,7 @@ Array
 >>> exit
 ```
 ## 4. プロキシ設定 
-### app/Http/Middleware/TrustProxies.php 変更
+### app/Http/Middleware/TrustProxies.php 15行目附近を変更
 Cloud9の環境ではAWSのロードバランサが使用されているため、LaravelがURLをうまく生成できない問題があるための対策
 ```
 protected $proxies = '**'; // 全プロキシを信用
@@ -76,13 +82,14 @@ protected $proxies = '**'; // 全プロキシを信用
 ```
 php artisan serve --host=$IP --port=$PORT
 ```
+以後、このターミナルはLaravelサーバ起動専用とする
 
 ## 6. 使用するデータベースの設定
 ###  config/database.php の18行目附近に以下の行があることを確認
 ```
 'default' => env('DB_CONNECTION', 'mysql'),
 ```
-### 7. .env 9-14行目附近を書き換え
+### .env 9-14行目附近を書き換え
 ```
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -92,7 +99,8 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-## 8. LaravelがMySQLのデータベースと接続に成功しているか確認
+### LaravelがMySQLのデータベースと接続に成功しているか確認
+bbs_laravelフォルダでもう一つターミナルを起動
 ```
 php artisan tinker
 >>> DB::reconnect()
@@ -100,13 +108,13 @@ php artisan tinker
 >>> exit
 ```
 
-## 9. Laravelアプリのタイムゾーン設定
-### modify: config/app.php の70行目附近を変更
+## 7. Laravelアプリのタイムゾーン設定
+### config/app.php の70行目附近を変更
 ```
     'timezone' => 'Asia/Tokyo',
 ```
 
-## 10. Git/Github
+## 8. Git/Github
 初回だけ以下を実行
 ```
 git config --global user.name "TakanorShima"
