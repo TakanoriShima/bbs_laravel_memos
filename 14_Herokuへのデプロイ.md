@@ -353,7 +353,7 @@ use Illuminate\Support\Facades\Storage;
                         </tr>
                         <tr>
                             <th>画像</th>
-                            <td><td><img src="{{ Storage::disk('s3')->url('uploads/' . $message->image) }}" alt="表示する画像がありません。"></td></td>
+                            <td><img src="{{ Storage::disk('s3')->url('uploads/' . $message->image) }}" alt="表示する画像がありません。"></td>
                         </tr>
                     </table>
                 </div> 
